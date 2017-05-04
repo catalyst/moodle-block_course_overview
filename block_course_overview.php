@@ -39,7 +39,7 @@ class block_course_overview extends block_base {
      * Block initialization
      */
     public function init() {
-        $this->title   = get_string('pluginname', 'block_course_overview');
+        $this->title = get_string('title', 'block_course_overview');
     }
 
     /**
