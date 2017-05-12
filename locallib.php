@@ -33,6 +33,12 @@ define('BLOCKS_COURSE_OVERVIEW_SHOWCATEGORIES_FULL_PATH', '2');
  * @return array html overview
  */
 function block_course_overview_get_overviews($courses) {
+    global $CFG;
+
+    // Disable debugging mode because all course modules show debugging message in their print_overview.
+    $debugmode = $CFG->debug;
+    $CFG->debug ^= E_DEPRECATED;
+
     $htmlarray = array();
     if ($modules = get_plugin_list_with_function('mod', 'print_overview')) {
         // Split courses list into batches with no more than MAX_MODINFO_CACHE_SIZE courses in one batch.
@@ -48,6 +54,7 @@ function block_course_overview_get_overviews($courses) {
             }
         }
     }
+    $CFG->debug = $debugmode;
     return $htmlarray;
 }
 
