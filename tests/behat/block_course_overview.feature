@@ -86,31 +86,7 @@ Feature: View the course overview block on the dashboard and test it's functiona
     And I press "Customise this page"
     And I should not see "Always show all"
 
-  Scenario: View the block by a user with the welcome area enabled and messaging disabled.
-    Given the following config values are set as admin:
-      | showwelcomearea | 1 | block_course_overview |
-      | messaging       | 0 |                       |
-    When I log in as "student1"
-    Then I should see "Welcome Student" in the "Course overview (legacy)" "block"
-    And I should not see "messages" in the "Course overview (legacy)" "block"
-
-  Scenario: View the block by a user with both the welcome area and messaging enabled.
-    Given the following config values are set as admin:
-      | showwelcomearea | 1 | block_course_overview |
-    When I log in as "student1"
-    Then I should see "Welcome Student" in the "Course overview (legacy)" "block"
-    And I should see "You have no unread messages" in the "Course overview (legacy)" "block"
-    And I follow "messages"
-    And I should see "No messages"
-
   @javascript
-  Scenario: View the block by a user with the welcome area and the user having messages.
-    Given the following config values are set as admin:
-      | showwelcomearea | 1 | block_course_overview |
-    And I log in as "student1"
-    And I should see "Welcome Student"
-    And I should see "You have no unread messages"
-
   Scenario: View the block by a user with the parent categories displayed.
     Given the following config values are set as admin:
       | showcategories | Parent category only | block_course_overview |

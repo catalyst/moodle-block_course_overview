@@ -63,6 +63,8 @@ class block_course_overview extends block_base {
 
         $content = array();
 
+        $isediting = $this->page->user_is_editing();
+
         $updatemynumber = optional_param('mynumber', -1, PARAM_INT);
         if ($updatemynumber >= 0 && optional_param('sesskey', '', PARAM_RAW) && confirm_sesskey()) {
             block_course_overview_update_mynumber($updatemynumber);
@@ -70,19 +72,25 @@ class block_course_overview extends block_base {
 
         profile_load_custom_fields($USER);
 
+        // Check if favourite added
+        $favourite = optional_param('favourite', 0, PARAM_INT);
+        if ($favourite) {
+            block_course_overview_add_favourite($favourite);
+        }
+
         $showallcourses = ($updatemynumber === self::SHOW_ALL_COURSES);
         list($sortedcourses, $sitecourses, $totalcourses) = block_course_overview_get_sorted_courses($showallcourses);
         $overviews = block_course_overview_get_overviews($sitecourses);
 
         $renderer = $this->page->get_renderer('block_course_overview');
-        if (!empty($config->showwelcomearea)) {
-            require_once($CFG->dirroot.'/message/lib.php');
-            $msgcount = message_count_unread_messages();
-            $this->content->text = $renderer->welcome_area($msgcount);
-        }
+
+        // try it
+        $main = new block_course_overview\output\main($sortedcourses, $overviews, $totalcourses, $isediting);
+        $this->content->text .= $renderer->render($main);
+        return $this->content;
 
         // Number of sites to display.
-        if ($this->page->user_is_editing() && empty($config->forcedefaultmaxcourses)) {
+        if ($isediting && empty($config->forcedefaultmaxcourses)) {
             $this->content->text .= $renderer->editing_bar_head($totalcourses);
         }
 
@@ -121,8 +129,6 @@ class block_course_overview extends block_base {
      * @return bool if true then header will be visible.
      */
     public function hide_header() {
-        // Hide header if welcome area is show.
-        $config = get_config('block_course_overview');
-        return !empty($config->showwelcomearea);
+        return false;
     }
 }

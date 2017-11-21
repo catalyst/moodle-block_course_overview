@@ -101,6 +101,33 @@ function block_course_overview_get_myorder() {
 }
 
 /**
+ * Get the list of course favourites
+ *
+ * @return array list of course ids
+ */
+function block_course_overview_get_favourites() {
+    if ($value = get_user_preferences('course_overview_favourites')) {
+        return explode(',', $value);
+    } else {
+        return array();
+    }
+}
+
+/**
+ * Sets favourites
+ *
+ * @param array $favourites list of course ids
+ */
+function block_course_overview_update_favourites($favourites) {
+    $value = implode(',', $favourites);
+    if (core_text::strlen($value) > 1333) {
+        // The value won't fit into the user preference. Remove courses in the end of the list (mostly likely user won't even notice).
+        $value = preg_replace('/,[\d]*$/', '', core_text::substr($value, 0, 1334));
+    }
+    set_user_preference('course_overview_favourites', $value);
+}
+
+/**
  * Returns shortname of activities in course
  *
  * @param int $courseid id of course for which activity shortname is needed
@@ -237,4 +264,26 @@ function block_course_overview_get_sorted_courses($showallcourses = false) {
         }
     }
     return array($sortedcourses, $sitecourses, count($courses));
+}
+
+/**
+ * Add a course to favourites
+ * @param int $favourite id of course
+ */
+function block_course_overview_add_favourite($favourite) {
+
+    // Add to fabourites list
+    $favourites = block_course_overview_get_favourites();
+    if (!in_array($favourite, $favourites)) {
+        array_unshift($favourites, $favourite);
+    }
+    block_course_overview_update_favourites($favourites);
+
+    // Remove from courses list
+    $order = block_course_overview_get_myorder();
+    $key = array_search($favourite, $order);
+    if ($key !== false) {
+        unset($order[$key]);
+    }    
+    block_course_overview_update_myorder($order);
 }

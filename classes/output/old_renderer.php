@@ -18,10 +18,17 @@
  * course_overview block rendrer
  *
  * @package    block_course_overview
- * @copyright  2012 Adam Olley <adam.olley@netspot.com.au>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+namespace block_course_overview\output;
 defined('MOODLE_INTERNAL') || die;
+
+use plugin_renderer_base;
+use renderable;
+use html_writer;
+use moodle_url;
+use single_select;
 
 /**
  * Course_overview block rendrer
@@ -29,7 +36,7 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright  2012 Adam Olley <adam.olley@netspot.com.au>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class block_course_overview_renderer extends plugin_renderer_base {
+class renderer extends plugin_renderer_base {
 
     /**
      * Construct contents of course_overview block
@@ -45,52 +52,20 @@ class block_course_overview_renderer extends plugin_renderer_base {
             global $CFG;
             require_once($CFG->libdir.'/coursecatlib.php');
         }
-        $ismovingcourse = false;
         $courseordernumber = 0;
         $maxcourses = count($courses);
         $userediting = false;
         // Intialise string/icon etc if user is editing and courses > 1
         if ($this->page->user_is_editing() && (count($courses) > 1)) {
             $userediting = true;
-            //$this->page->requires->js_init_call('M.block_course_overview.add_handles');
             $this->page->requires->js_call_amd('block_course_overview/module', 'init');
-
-            // Check if course is moving
-            $ismovingcourse = optional_param('movecourse', FALSE, PARAM_BOOL);
-            $movingcourseid = optional_param('courseid', 0, PARAM_INT);
-        }
-
-        // Render first movehere icon.
-        if ($ismovingcourse) {
-            // Remove movecourse param from url.
-            $this->page->ensure_param_not_in_url('movecourse');
-
-            // Show moving course notice, so user knows what is being moved.
-            $html .= $this->output->box_start('notice');
-            $a = new stdClass();
-            $a->fullname = $courses[$movingcourseid]->fullname;
-            $a->cancellink = html_writer::link($this->page->url, get_string('cancel'));
-            $html .= get_string('movingcourse', 'block_course_overview', $a);
-            $html .= $this->output->box_end();
-
-            $moveurl = new moodle_url('/blocks/course_overview/move.php',
-                        array('sesskey' => sesskey(), 'moveto' => 0, 'courseid' => $movingcourseid));
-            // Create move icon, so it can be used.
-            $name = $courses[$movingcourseid]->fullname;
-            $movetofirsticon = $this->output->pix_icon('movehere', get_string('movetofirst', 'block_course_overview', $name));
-            $moveurl = html_writer::link($moveurl, $movetofirsticon);
-            $html .= html_writer::tag('div', $moveurl, array('class' => 'movehere'));
         }
 
         foreach ($courses as $key => $course) {
-            // If moving course, then don't show course which needs to be moved.
-            if ($ismovingcourse && ($course->id == $movingcourseid)) {
-                continue;
-            }
             $html .= $this->output->box_start('coursebox ui-state-default', "course-{$course->id}");
             $html .= html_writer::start_tag('div', array('class' => 'course_title'));
             // If user is editing, then add move icons.
-            if ($userediting && !$ismovingcourse) {
+            if ($userediting) {
                 $moveicon = $this->output->pix_icon('t/move', get_string('movecourse', 'block_course_overview', $course->fullname));
                 $moveurl = new moodle_url($this->page->url, array('sesskey' => sesskey(), 'movecourse' => 1, 'courseid' => $course->id));
                 $moveurl = html_writer::link($moveurl, $moveicon);
@@ -123,8 +98,8 @@ class block_course_overview_renderer extends plugin_renderer_base {
                 }
             }
 
-            // If user is moving courses, then down't show overview.
-            if (isset($overviews[$course->id]) && !$ismovingcourse) {
+            // Show overview
+            if (isset($overviews[$course->id])) {
                 $html .= $this->activity_display($course->id, $overviews[$course->id]);
             }
 
@@ -149,16 +124,6 @@ class block_course_overview_renderer extends plugin_renderer_base {
             $html .= $this->output->container('', 'flush');
             $html .= $this->output->box_end();
             $courseordernumber++;
-            if ($ismovingcourse) {
-                $moveurl = new moodle_url('/blocks/course_overview/move.php',
-                            array('sesskey' => sesskey(), 'moveto' => $courseordernumber, 'courseid' => $movingcourseid));
-                $a = new stdClass();
-                $a->movingcoursename = $courses[$movingcourseid]->fullname;
-                $a->currentcoursename = $course->fullname;
-                $movehereicon = $this->output->pix_icon('movehere', get_string('moveafterhere', 'block_course_overview', $a));
-                $moveurl = html_writer::link($moveurl, $movehereicon);
-                $html .= html_writer::tag('div', $moveurl, array('class' => 'movehere'));
-            }
         }
         // Wrap course list in a div and return.
         return html_writer::tag('div', $html, array('class' => 'course_list'));
@@ -296,7 +261,7 @@ class block_course_overview_renderer extends plugin_renderer_base {
         $output .= '<div id="' . $id . '_caption" class="collapsibleregioncaption">';
         $output .= $caption . ' ';
         $output .= '</div><div id="' . $id . '_inner" class="collapsibleregioninner">';
-        $this->page->requires->js_init_call('M.block_course_overview.collapsible', array($id, $userpref, get_string('clicktohideshow')));
+        // $this->page->requires->js_init_call('M.block_course_overview.collapsible', array($id, $userpref, get_string('clicktohideshow')));
 
         return $output;
     }
