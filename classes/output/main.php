@@ -38,45 +38,49 @@ use templatable;
  */
 class main implements renderable, templatable {
 
-    private $sortedcourses;
-
-    private $overviews;
-
-    private $totalcourses;
+    private $tabs;
 
     private $isediting;
 
+    private $selectedtab;
+
     /**
      * Constructor
-     * @param array $sortedcourses
-     * @param array $overviews
-     * @param int $totalcourses
+     * @param array $tabs data for favourites/courses
      * @param boolean $isediting
      */
-    public function __construct($sortedcourses, $overviews, $totalcourses, $isediting) {
-        $this->sortedcourses = $sortedcourses;
-        $this->overviews = $overviews;
-        $this->totalcourses = $totalcourses;
+    public function __construct($tabs, $isediting, $selectedtab) {
+        $this->tabs = $tabs;
         $this->isediting = $isediting;
+        $this->tab = $selectedtab;
     }
 
     /**
-     * Export this data so it can be used as the context for a mustache template.
-     *
+     * Get course data into suitable construct
      * @param \renderer_base $output
-     * @return stdClass
+     * @param boolean favourites (is this favourites tab)
+     * @param object $tab data for tab
+     * @return array of courses
      */
-    public function export_for_template(renderer_base $output) {
+    private function process_tab($output, $favourites, $tab) {
 
         // Add extra info (and make zero indexed).
         $courselist = [];
-        foreach ($this->sortedcourses as $course) {
+        foreach ($tab->sortedcourses as $course) {
             $course->link = new \moodle_url('/course/view.php', array('id' => $course->id));
-            $course->favouritelink = new \moodle_url('/my', array('favourite' => $course->id));
-            if (!empty($this->overviews[$course->id])) {
+            if ($favourites) {
+                $course->favouritelink = new \moodle_url('/my', array('unfavourite' => $course->id));
+                $course->favouriteicon = 'fa-star';
+                $course->favouritealt = get_string('unfavourite', 'block_course_overview');
+            } else {
+                $course->favouritelink = new \moodle_url('/my', array('favourite' => $course->id));
+                $course->favouriteicon = 'fa-star-o';
+                $course->favouritealt = get_string('makefavourite', 'block_course_overview');
+            }
+            if (!empty($tab->overviews[$course->id])) {
                 $course->hasoverviews = true;
                 $overviews = array();
-                foreach ($this->overviews[$course->id] as $activity => $overview_text) {
+                foreach ($tab->overviews[$course->id] as $activity => $overview_text) {
                     $overview = new \stdClass;
                     $overview->coursename = $course->fullname;
                     $overview->activity = $activity;
@@ -94,9 +98,34 @@ class main implements renderable, templatable {
             $courselist[] = $course;
         }
 
+        return $courselist;
+    }
+
+    /**
+     * Export this data so it can be used as the context for a mustache template.
+     *
+     * @param \renderer_base $output
+     * @return stdClass
+     */
+    public function export_for_template(renderer_base $output) {
+
+        // generate array for tabs 0=favs, 1=courses
+        $tabs = array(
+            0 => (object) [
+                'tab' => 'favourites', 
+                'show' => '',
+                'data' => $this->process_tab($output, true, $this->tabs['favourites'])
+            ],
+            1 => (object) [
+                'tab' => 'courses', 
+                'show' => 'show active',
+                'data' => $this->process_tab($output, false, $this->tabs['courses'])
+                ],
+        );
+
         // 'courses to show' select box
         $options = array('0' => get_string('alwaysshowall', 'block_course_overview'));
-        for ($i = 1; $i <= $this->totalcourses; $i++) {
+        for ($i = 1; $i <= $this->tabs['courses']->totalcourses; $i++) {
             $options[$i] = $i;
         }
         $url = new \moodle_url('/my/index.php', ['sesskey' => sesskey()]);
@@ -104,10 +133,12 @@ class main implements renderable, templatable {
         $select->set_label(get_string('numtodisplay', 'block_course_overview'));
 
         return [
-            'courses' => $courselist,
+            'tabs' => $tabs,
             'isediting' => $this->isediting,
             'select' => $output->render($select),
-            'viewingfavourites' => false,
+            'help' => $output->help_icon('help', 'block_course_overview', true),
+            'url' => $url,
+            'viewingfavourites' => $this->selectedtab == 'favourites',
         ];
     }
 

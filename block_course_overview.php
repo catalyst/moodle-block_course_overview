@@ -48,7 +48,7 @@ class block_course_overview extends block_base {
      * @return stdClass contents of block
      */
     public function get_content() {
-        global $USER, $CFG, $DB;
+        global $USER, $CFG, $DB, $SESSION;
         require_once($CFG->dirroot.'/user/profile/lib.php');
 
         if($this->content !== NULL) {
@@ -72,20 +72,44 @@ class block_course_overview extends block_base {
 
         profile_load_custom_fields($USER);
 
-        // Check if favourite added
+        // Check if favourite added/removed
         $favourite = optional_param('favourite', 0, PARAM_INT);
         if ($favourite) {
             block_course_overview_add_favourite($favourite);
         }
+        $unfavourite = optional_param('unfavourite', 0, PARAM_INT);
+        if ($unfavourite) {
+            block_course_overview_remove_favourite($unfavourite);
+        }
+
+        // Check if tab clicked
+        $tab = isset($SESSION->overviewtab) ? $SESSION->overviewtab : 'courses';
+        $overviewtab = optional_param('overviewtab', '', PARAM_TEXT);
+        if (($overviewtab == 'favourite') || ($overviewtab == 'courses')) {
+            $tab = $overviewtab;
+        }
 
         $showallcourses = ($updatemynumber === self::SHOW_ALL_COURSES);
-        list($sortedcourses, $sitecourses, $totalcourses) = block_course_overview_get_sorted_courses($showallcourses);
-        $overviews = block_course_overview_get_overviews($sitecourses);
+
+        // get data for favourites and course tab
+        $tabs = array();
+        $ftab = new stdClass;
+        $ftab->tab = 'favourites';
+        list($ftab->sortedcourses, $ftab->sitecourses, $ftab->totalcourses) = block_course_overview_get_sorted_courses(true, true);
+        $ftab->overviews = block_course_overview_get_overviews($ftab->sortedcourses);
+        $ctab = new stdClass;
+        $ctab->tab = 'courses';
+        list($ctab->sortedcourses, $ctab->sitecourses, $ctab->totalcourses) = block_course_overview_get_sorted_courses($showallcourses, false, array_keys($ftab->sortedcourses));
+        $ctab->overviews = block_course_overview_get_overviews($ctab->sortedcourses);
+        $tabs = array(
+            'favourites' => $ftab,
+            'courses' => $ctab,
+        );
 
         $renderer = $this->page->get_renderer('block_course_overview');
 
         // try it
-        $main = new block_course_overview\output\main($sortedcourses, $overviews, $totalcourses, $isediting);
+        $main = new block_course_overview\output\main($tabs, $isediting, $tab);
         $this->content->text .= $renderer->render($main);
         return $this->content;
 

@@ -195,9 +195,11 @@ function block_course_overview_get_max_user_courses($showallcourses = false) {
  * Return sorted list of user courses
  *
  * @param bool $showallcourses if set true all courses will be visible.
+ * @param bool $favourites tab selected
+ * @param array $exlude list of courses not to include (i.e. favs in courses list)
  * @return array list of sorted courses and count of courses.
  */
-function block_course_overview_get_sorted_courses($showallcourses = false) {
+function block_course_overview_get_sorted_courses($showallcourses = false, $favourites, $exclude = []) {
     global $USER;
 
     $limit = block_course_overview_get_max_user_courses($showallcourses);
@@ -229,7 +231,11 @@ function block_course_overview_get_sorted_courses($showallcourses = false) {
         $courses[$remoteid] = $val;
     }
 
-    $order = block_course_overview_get_myorder();
+    if ($favourites) {
+        $order = block_course_overview_get_favourites();
+    } else {
+        $order = block_course_overview_get_myorder();
+    }
 
     $sortedcourses = array();
     $counter = 0;
@@ -245,14 +251,20 @@ function block_course_overview_get_sorted_courses($showallcourses = false) {
             $counter++;
         }
     }
-    // Append unsorted courses if limit allows
-    foreach ($courses as $c) {
-        if (($limit != 0) && ($counter >= $limit)) {
-            break;
-        }
-        if (!in_array($c->id, $order)) {
-            $sortedcourses[$c->id] = $c;
-            $counter++;
+
+    // Append unsorted courses if limit allows & not favourites
+    if (!$favourites) {
+        foreach ($courses as $c) {
+            if (($limit != 0) && ($counter >= $limit)) {
+                break;
+            }
+            if (in_array($c->id, $exclude)) {
+                continue;
+            }
+            if (!in_array($c->id, $order)) {
+                $sortedcourses[$c->id] = $c;
+                $counter++;
+            }
         }
     }
 
@@ -285,5 +297,27 @@ function block_course_overview_add_favourite($favourite) {
     if ($key !== false) {
         unset($order[$key]);
     }    
+    block_course_overview_update_myorder($order);
+}
+
+/**
+ * Remove course from favourites
+ * @param int $favourite id of course
+ */
+function block_course_overview_remove_favourite($favourite) {
+
+    // Remove from favourites list
+    $order = block_course_overview_get_favourites();
+    $key = array_search($favourite, $order);
+    if ($key !== false) {
+        unset($order[$key]);
+    }    
+    block_course_overview_update_favourites($order);
+
+    // Add to courses list
+    $order = block_course_overview_get_myorder();
+    if (!in_array($favourite, $order)) {
+        $order[] = $favourite;
+    }
     block_course_overview_update_myorder($order);
 }

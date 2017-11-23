@@ -1,12 +1,34 @@
-// Javascript module to move courses around
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-define(['jquery', 'jqueryui', 'core/config'], function($, UI, mdlconfig) {
+/**
+ * A javascript module to allow drag-and-drop control of course order
+ *
+ * @module     block_course_overview
+ * @class      block
+ * @package    block_course_overview
+ * @copyright  2017 Howard Miller <howardsmiller@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+define(['jquery', 'jqueryui'], function($, UI) {
 
     return {
         init: function() {
 
             // change non-js links to be inactive
-            //$(".course_title .move a .fa-arrows-v").removeClass("fa-arrows-v").addClass("fa-arrows");
             $(".coursebox a").removeAttr("href");
 
             // Make the course list sort
@@ -20,8 +42,10 @@ define(['jquery', 'jqueryui', 'core/config'], function($, UI, mdlconfig) {
                     });
 
                     // send new sortorder
+                    var activetab = $(".block_course_overview .nav-tabs .active").data("tabname");
                     var data = {
                         sesskey : M.cfg.sesskey,
+                        tab : activetab,
                         sortorder : sortorder
                     };
                     $.post(

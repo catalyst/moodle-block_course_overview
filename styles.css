@@ -1,7 +1,7 @@
 .block-course-overview .courseovbox {
     border-bottom: 1px solid #d3d8dc;
-    padding-top: 10px;
-    height: 50px;
+    padding-top: 12px;
+    height: 52px;
 }
 
 .block-course-overview .course-list {
@@ -19,9 +19,6 @@
 .overview-icon > img {
     height: 36px;
     width: 36px;
-}
-
-.dialogue {
 }
 
 .activity_overviews  a {
@@ -65,3 +62,13 @@
 a.favourite_icon:hover {
     text-decoration: none;
 }
+
+.block-course-overview .overview-help {
+    margin-top: 10px;
+}
+
+.block-course-overview .overview-help i {
+    font-size: 1.5em;
+}
+
+
