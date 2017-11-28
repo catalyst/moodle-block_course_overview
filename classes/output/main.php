@@ -38,6 +38,8 @@ use templatable;
  */
 class main implements renderable, templatable {
 
+    private $config;
+
     private $tabs;
 
     private $isediting;
@@ -46,13 +48,16 @@ class main implements renderable, templatable {
 
     /**
      * Constructor
+     * @param object $config block configuration
      * @param array $tabs data for favourites/courses
      * @param boolean $isediting
+     * @param string $selectedtab
      */
-    public function __construct($tabs, $isediting, $selectedtab) {
+    public function __construct($config, $tabs, $isediting, $selectedtab) {
+        $this->config = $config;
         $this->tabs = $tabs;
         $this->isediting = $isediting;
-        $this->tab = $selectedtab;
+        $this->selectedtab = $selectedtab;
     }
 
     /**
@@ -68,6 +73,7 @@ class main implements renderable, templatable {
         $courselist = [];
         foreach ($tab->sortedcourses as $course) {
             $course->link = new \moodle_url('/course/view.php', array('id' => $course->id));
+            $course->categories = implode(' / ', $this->categories($course->category));
             if ($favourites) {
                 $course->favouritelink = new \moodle_url('/my', array('unfavourite' => $course->id));
                 $course->favouriteicon = 'fa-star';
@@ -102,6 +108,34 @@ class main implements renderable, templatable {
     }
 
     /**
+     * Get (if required) category string for course
+     * @param int $id course's category id
+     * @return string category path
+     */
+    private function categories($id) {
+        $categories = array();
+
+        if ($this->config->showcategories != BLOCKS_COURSE_OVERVIEW_SHOWCATEGORIES_NONE) {
+
+            // List category parent or categories path here.
+            $currentcategory = \coursecat::get($id, IGNORE_MISSING);
+            if ($currentcategory !== null) {
+                if ($this->config->showcategories == BLOCKS_COURSE_OVERVIEW_SHOWCATEGORIES_FULL_PATH) {
+                    foreach ($currentcategory->get_parents() as $categoryid) {
+                        $category = \coursecat::get($categoryid, IGNORE_MISSING);
+                        if ($category !== null) {
+                            $categories[] = $category->get_formatted_name();
+                        }
+                    }
+                }
+                $categories[] = $currentcategory->get_formatted_name();
+            }
+        }
+
+        return $categories;
+    }
+
+    /**
      * Export this data so it can be used as the context for a mustache template.
      *
      * @param \renderer_base $output
@@ -113,31 +147,20 @@ class main implements renderable, templatable {
         $tabs = array(
             0 => (object) [
                 'tab' => 'favourites', 
-                'show' => '',
-                'data' => $this->process_tab($output, true, $this->tabs['favourites'])
+                'show' => $this->selectedtab == 'favourites' ? 'show active' : '',
+                'data' => $this->process_tab($output, true, $this->tabs['favourites']),
             ],
             1 => (object) [
                 'tab' => 'courses', 
-                'show' => 'show active',
-                'data' => $this->process_tab($output, false, $this->tabs['courses'])
+                'show' => $this->selectedtab == 'courses' ? 'show active' : '',
+                'data' => $this->process_tab($output, false, $this->tabs['courses']),
                 ],
         );
-
-        // 'courses to show' select box
-        $options = array('0' => get_string('alwaysshowall', 'block_course_overview'));
-        for ($i = 1; $i <= $this->tabs['courses']->totalcourses; $i++) {
-            $options[$i] = $i;
-        }
-        $url = new \moodle_url('/my/index.php', ['sesskey' => sesskey()]);
-        $select = new \single_select($url, 'mynumber', $options, block_course_overview_get_max_user_courses(), array());
-        $select->set_label(get_string('numtodisplay', 'block_course_overview'));
 
         return [
             'tabs' => $tabs,
             'isediting' => $this->isediting,
-            'select' => $output->render($select),
             'help' => $output->help_icon('help', 'block_course_overview', true),
-            'url' => $url,
             'viewingfavourites' => $this->selectedtab == 'favourites',
         ];
     }

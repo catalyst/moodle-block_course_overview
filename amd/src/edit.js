@@ -29,12 +29,12 @@ define(['jquery', 'jqueryui'], function($, UI) {
         init: function() {
 
             // change non-js links to be inactive
-            $(".coursebox a").removeAttr("href");
+            $(".courseovbox a").removeAttr("href");
 
             // Make the course list sort
-            $(".course-list").sortable({
+            $(".tab-pane .course-list").sortable({
                 update: function(event, ui) {
-                    var kids = $(".course-list").children();
+                    var kids = $(".tab-pane.active .course-list").children();
                     var sortorder = [];
                     $.each(kids, function(index, value) {
                        var id = value.getAttribute('id');

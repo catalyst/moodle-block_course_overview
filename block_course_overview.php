@@ -83,49 +83,34 @@ class block_course_overview extends block_base {
         }
 
         // Check if tab clicked
-        $tab = isset($SESSION->overviewtab) ? $SESSION->overviewtab : 'courses';
-        $overviewtab = optional_param('overviewtab', '', PARAM_TEXT);
-        if (($overviewtab == 'favourite') || ($overviewtab == 'courses')) {
-            $tab = $overviewtab;
-        }
-
-        $showallcourses = ($updatemynumber === self::SHOW_ALL_COURSES);
 
         // get data for favourites and course tab
         $tabs = array();
         $ftab = new stdClass;
         $ftab->tab = 'favourites';
-        list($ftab->sortedcourses, $ftab->sitecourses, $ftab->totalcourses) = block_course_overview_get_sorted_courses(true, true);
+        list($ftab->sortedcourses, $ftab->sitecourses, $ftab->totalcourses) = block_course_overview_get_sorted_courses(true);
         $ftab->overviews = block_course_overview_get_overviews($ftab->sortedcourses);
         $ctab = new stdClass;
         $ctab->tab = 'courses';
-        list($ctab->sortedcourses, $ctab->sitecourses, $ctab->totalcourses) = block_course_overview_get_sorted_courses($showallcourses, false, array_keys($ftab->sortedcourses));
+        list($ctab->sortedcourses, $ctab->sitecourses, $ctab->totalcourses) = block_course_overview_get_sorted_courses(false, array_keys($ftab->sortedcourses));
         $ctab->overviews = block_course_overview_get_overviews($ctab->sortedcourses);
         $tabs = array(
             'favourites' => $ftab,
             'courses' => $ctab,
         );
 
+        // Default tab. One with something in it or favourites
+        if ($ftab->totalcourses) {
+            $tab = 'favourites';
+        } else {
+            $tab = 'courses';
+        }
+
         $renderer = $this->page->get_renderer('block_course_overview');
 
-        // try it
-        $main = new block_course_overview\output\main($tabs, $isediting, $tab);
+        // Render block
+        $main = new block_course_overview\output\main($config, $tabs, $isediting, $tab);
         $this->content->text .= $renderer->render($main);
-        return $this->content;
-
-        // Number of sites to display.
-        if ($isediting && empty($config->forcedefaultmaxcourses)) {
-            $this->content->text .= $renderer->editing_bar_head($totalcourses);
-        }
-
-        if (empty($sortedcourses)) {
-            $this->content->text .= get_string('nocourses','my');
-        } else {
-            // For each course, build category cache.
-            $this->content->text .= $renderer->course_overview($sortedcourses, $overviews);
-            $this->content->text .= $renderer->hidden_courses($totalcourses - count($sortedcourses));
-        }
-
         return $this->content;
     }
 

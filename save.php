@@ -30,10 +30,10 @@ require_sesskey();
 require_login();
 
 $sortorder = required_param_array('sortorder', PARAM_INT);
-$activetab = required_param_array('tab', PARAM_INT);
+$activetab = required_param('tab', PARAM_ALPHA);
 
-if ($tab == 'courses') {
+if ($activetab == 'courses') {
     block_course_overview_update_myorder($sortorder);
-} else if ($tab = "favourites") {
+} else if ($activetab == "favourites") {
     block_course_overview_update_favourites($sortorder);
 }

@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template block_course_overview/main
+    @template block_course_overview/courselist
 
     This template renders the course list for the course_overview block
 
@@ -24,7 +24,7 @@
 }}
 <div class="course-list">
     {{# data }}
-        <div id="course-{{ id }}" class="courseovbox tab-pane">
+        <div id="course-{{ id }}" class="courseovbox">
             <h2>
                 {{# isediting }}
                     <i class="icon fa fa-fw fa-arrows cursor" title="{{# str }}movecourse, block_course_overview, {{ fullname }}{{/ str }}"></i>
@@ -43,6 +43,14 @@
                     {{/ overviews }}
                 {{/ hasoverviews }}
             </h2>
+            <div class="ovcategories">
+                <small>{{ categories }}</small>
+            </div>
         </div>
+     {{/ data }}
+     {{^ data }}
+         <div class="alert alert-warning">
+             {{# str }}nocourses, block_course_overview{{/ str }}
+         </div>
      {{/ data }}
 </div>

@@ -22,7 +22,7 @@ Feature: Add the course overview (legacy) block on the dashboard and check it's 
       And I set the field "Region" to "content"
       And I press "Save changes"
       Then I should see "Course overview (legacy)" in the "Course overview (legacy)" "block"
-      And I should see "No course information to show" in the "Course overview (legacy)" "block"
+      And I should see "There are no courses to show" in the "Course overview (legacy)" "block"
 
 
       
