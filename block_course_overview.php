@@ -154,4 +154,20 @@ class block_course_overview extends block_base {
     public function hide_header() {
         return false;
     }
+
+    /**
+     * Do any additional initialization you may need at the time a new block instance is created
+     * @return boolean
+     */
+    function instance_create() {
+        global $DB;
+
+        // Bodge? Modify our own instance to make the default region the
+        // content area, not the side bar.
+        $instance = $this->instance;
+        $instance->defaultregion = 'content';
+        $DB->update_record('block_instances', $instance);
+
+        return true;
+    }
 }
