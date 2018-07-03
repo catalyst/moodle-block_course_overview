@@ -1,4 +1,4 @@
-## 3.5.2 ##
+## 3.5.3 ##
 
 * New instances load in the 'content' area of the Dashboard automagically.
 * New option to select default tab
