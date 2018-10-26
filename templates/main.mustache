@@ -23,6 +23,14 @@
     {}
 }}
 
+<form action="/course/search.php" id="coursesearch" method="get" class="form-inline">
+    <fieldset class="coursesearchbox invisiblefieldset">
+        <label for="coursesearchbox">Search Subjects</label>
+        <input id="coursesearchbox" name="search" size="30" value="" class="form-control" type="text">
+        <button class="btn btn-secondary" type="submit">Go</button>
+    </fieldset>
+</form>
+
 <div id="block-course-overview-{{uniqid}}" class="block-course-overview" data-region="course-overview">
 
     {{# isediting }}

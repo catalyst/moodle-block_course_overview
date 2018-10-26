@@ -50,6 +50,11 @@
             {{/ hasoverviews }}
         </div>
      {{/ data }}
+
+    {{# haspaging }}
+        {{{ pagingbar }}}
+    {{/ haspaging }}
+
      {{^ data }}
          <div class="alert alert-warning">
              {{# str }}nocourses, block_course_overview{{/ str }}

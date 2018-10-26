@@ -64,9 +64,16 @@ class block_course_overview extends block_base {
         $this->content->text = '';
         $this->content->footer = '';
 
-        $content = array();
-
         $isediting = $this->page->user_is_editing();
+
+        // Default tab. One with something in it or selected default.
+        if (($config->defaulttab == BLOCKS_COURSE_OVERVIEW_DEFAULT_FAVOURITES)) {
+            $tab = 'favourites';
+        } else {
+            $tab = 'courses';
+        }
+
+        $selectedtab = optional_param('tab', $tab, PARAM_TEXT);
 
         $updatemynumber = optional_param('mynumber', -1, PARAM_INT);
         if ($updatemynumber >= 0 && optional_param('sesskey', '', PARAM_RAW) && confirm_sesskey()) {
@@ -93,18 +100,58 @@ class block_course_overview extends block_base {
             $sortorder = $soparam;
             block_course_overview_update_sortorder($sortorder);
         }
+        // Pagings paremeters.
+
+        $coursepage = optional_param('cp', 0, PARAM_INT);
+        $favouritepage = optional_param('fp', 0, PARAM_INT);
+        $totalcourses = optional_param('ct', -1, PARAM_INT);
+        $totalfavorites = optional_param('ft', -1, PARAM_INT);
+
+        $limit = block_course_overview_get_max_user_courses();
+        $courseoffset = $coursepage * $limit;
+        $favoriteoffset = $favouritepage * $limit;
 
         // Get data for favourites and course tab.
-        $tabs = array();
         $ftab = new stdClass;
         $ftab->tab = 'favourites';
-        list($ftab->sortedcourses, $ftab->sitecourses, $ftab->totalcourses) = block_course_overview_get_sorted_courses(true);
+        list($ftab->sortedcourses, $ftab->sitecourses)
+            = block_course_overview_get_sorted_courses(true, false, [], $favoriteoffset, $limit);
+        if ($totalcourses < 0 ) {
+            $ftab->totalcourses = block_course_overview_get_sorted_courses(true)[2];
+        } else {
+            $ftab->totalcourses = $totalfavorites;
+        }
+
         $ftab->overviews = block_course_overview_get_overviews($ftab->sortedcourses);
+        if ( $ftab->totalcourses > $limit) {
+            $ftab->paging = true;
+            $ftab->page = $favouritepage;
+            $ftab->courseslimit = $limit;
+        } else {
+            $ftab->paging = false;
+            $ftab->page = $favouritepage;
+            $ftab->courseslimit = $limit;
+        }
         $ctab = new stdClass;
         $ctab->tab = 'courses';
-        list($ctab->sortedcourses, $ctab->sitecourses, $ctab->totalcourses)
-            = block_course_overview_get_sorted_courses(false, $config->keepfavourites, array_keys($ftab->sortedcourses));
+        list($ctab->sortedcourses, $ctab->sitecourses)
+            = block_course_overview_get_sorted_courses(false, true, [], $courseoffset, $limit);
+        if ($totalcourses < 0 ) {
+            $ctab->totalcourses = block_course_overview_get_sorted_courses(false, true)[2];
+        } else {
+            $ctab->totalcourses = $totalcourses;
+        }
         $ctab->overviews = block_course_overview_get_overviews($ctab->sortedcourses);
+        if ( $ctab->totalcourses > $limit) {
+            $ctab->paging = true;
+            $ctab->page = $coursepage;
+            $ctab->courseslimit = $limit;
+        } else {
+            $ctab->paging = false;
+            $ctab->page = $coursepage;
+            $ctab->courseslimit = $limit;
+        }
+
         $tabs = array(
             'favourites' => $ftab,
             'courses' => $ctab,
@@ -113,17 +160,10 @@ class block_course_overview extends block_base {
         // Get list of favourites.
         $favourites = array_keys($ftab->sortedcourses);
 
-        // Default tab. One with something in it or selected default.
-        if (($config->defaulttab == BLOCKS_COURSE_OVERVIEW_DEFAULT_FAVOURITES) && $ftab->totalcourses) {
-            $tab = 'favourites';
-        } else {
-            $tab = 'courses';
-        }
-
         $renderer = $this->page->get_renderer('block_course_overview');
 
         // Render block.
-        $main = new block_course_overview\output\main($config, $tabs, $isediting, $tab, $sortorder, $favourites);
+        $main = new block_course_overview\output\main($config, $tabs, $isediting, $selectedtab, $sortorder, $favourites);
         $this->content->text .= $renderer->render($main);
         return $this->content;
     }

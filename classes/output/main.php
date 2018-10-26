@@ -180,16 +180,38 @@ class main implements renderable, templatable {
     public function export_for_template(renderer_base $output) {
 
         // Generate array for tabs 0=favs, 1=courses.
+        $tabfavourites = $this->tabs['favourites'];
+        $tabcourses = $this->tabs['courses'];
         $tabs = array(
             0 => (object) [
                 'tab' => 'favourites',
                 'show' => $this->selectedtab == 'favourites' ? 'show active' : '',
-                'data' => $this->process_tab($output, true, $this->tabs['favourites']),
+                'data' => $this->process_tab($output, true, $tabfavourites),
+                'haspaging' => $tabfavourites->paging,
+                'pagingbar' => $this->create_paging(
+                    $tabfavourites->paging,
+                    $tabfavourites->totalcourses,
+                    $tabfavourites->page,
+                    $tabfavourites->courseslimit,
+                    'favourites',
+                    $tabcourses->page,
+                    $tabcourses->totalcourses
+                ),
             ],
             1 => (object) [
                 'tab' => 'courses',
                 'show' => $this->selectedtab == 'courses' ? 'show active' : '',
-                'data' => $this->process_tab($output, false, $this->tabs['courses']),
+                'data' => $this->process_tab($output, false, $tabcourses),
+                'haspaging' => $tabcourses->paging,
+                'pagingbar' => $this->create_paging(
+                    $tabcourses->paging,
+                    $tabcourses->totalcourses,
+                    $tabcourses->page,
+                    $tabcourses->courseslimit,
+                    'courses',
+                    $tabfavourites->page,
+                    $tabfavourites->totalcourses
+                ),
                 ],
         );
 
@@ -200,6 +222,20 @@ class main implements renderable, templatable {
             'viewingfavourites' => $this->selectedtab == 'favourites',
             'select' => $this->reorder_select($output),
         ];
+    }
+
+    private function create_paging($paging, $total, $currentpage, $limit, $selectedtab, $otherpage, $othertotal){
+        if ($paging) {
+            global $OUTPUT;
+            if ($selectedtab == 'courses') {
+                return $OUTPUT->paging_bar($total, $currentpage, $limit, "/my/index.php?tab=$selectedtab&ft=$othertotal&fp=$otherpage&ct=$total", 'cp');
+            } else {
+                return $OUTPUT->paging_bar($total, $currentpage, $limit, "/my/index.php?tab=$selectedtab&ct=$othertotal&cp=$otherpage&ft=$total", 'fp');
+            }
+
+        } else {
+            return "";
+        }
     }
 
 }

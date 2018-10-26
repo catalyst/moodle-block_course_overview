@@ -173,11 +173,12 @@ function block_course_overview_update_sortorder($sortorder) {
  * @param array $exlude list of courses not to include (i.e. favs in courses list)A
  * @return array list of sorted courses and count of courses.
  */
-function block_course_overview_get_sorted_courses($favourites, $keepfavourites = false, $exclude = []) {
+function block_course_overview_get_sorted_courses($favourites, $keepfavourites = false, $exclude = [],
+                                                  $offset = 0, $limit = 0) {
     global $USER;
 
     // Bodge... don't regenerate course list
-    static $courses = [];
+    $courses = [];
 
     $sortorder = block_course_overview_get_sortorder();
 
@@ -193,7 +194,13 @@ function block_course_overview_get_sorted_courses($favourites, $keepfavourites =
         } else {
             $sort = 'visible DESC,sortorder ASC';
         }
-        $courses = enrol_get_my_courses(null, $sort);
+        if ($favourites) {
+            $favids = block_course_overview_get_favourites();
+            $courses = enrol_get_my_courses(null, $sort . " OFFSET $offset ",  $limit, $favids);
+        } else {
+            $courses = enrol_get_my_courses(null, $sort . " OFFSET $offset ",  $limit);
+        }
+
         $site = get_site();
 
         if (array_key_exists($site->id, $courses)) {
@@ -208,18 +215,19 @@ function block_course_overview_get_sorted_courses($favourites, $keepfavourites =
             }
         }
 
+        // TODO: Move remote courses to a new tab if required
         // Get remote courses.
-        $remotecourses = array();
-        if (is_enabled_auth('mnet')) {
-            $remotecourses = get_my_remotecourses();
-        }
-
-        // Remote courses will have -ve remoteid as key, so it can be differentiated from normal courses.
-        foreach ($remotecourses as $id => $val) {
-            $remoteid = $val->remoteid * -1;
-            $val->id = $remoteid;
-            $courses[$remoteid] = $val;
-        }
+//        $remotecourses = array();
+//        if (is_enabled_auth('mnet')) {
+//            $remotecourses = get_my_remotecourses();
+//        }
+//
+//        // Remote courses will have -ve remoteid as key, so it can be differentiated from normal courses.
+//        foreach ($remotecourses as $id => $val) {
+//            $remoteid = $val->remoteid * -1;
+//            $val->id = $remoteid;
+//            $courses[$remoteid] = $val;
+//        }
     }
 
     if ($favourites) {
@@ -318,4 +326,26 @@ function block_course_overview_remove_favourite($favourite) {
         $order[] = $favourite;
     }
     block_course_overview_update_myorder($order);
+}
+
+/**
+ * Returns maximum number of courses which will be displayed in course_overview block
+ *
+ * @param bool $showallcourses if set true all courses will be visible.
+ * @return int maximum number of courses
+ */
+function block_course_overview_get_max_user_courses($showallcourses = false) {
+    // Get block configuration
+    $config = get_config('block_course_overview');
+    $limit = $config->defaultmaxcourses;
+
+    // If max course is not set then try get user preference
+    if (empty($config->forcedefaultmaxcourses)) {
+        if ($showallcourses) {
+            $limit = 0;
+        } else {
+            $limit = get_user_preferences('course_overview_number_of_courses', $limit);
+        }
+    }
+    return $limit;
 }
