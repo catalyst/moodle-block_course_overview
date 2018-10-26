@@ -215,7 +215,7 @@ function block_course_overview_get_sorted_courses($favourites, $keepfavourites =
             }
         }
 
-        // TODO: Move remote courses to a new tab if required
+        // TODO: Move remote courses to a new tab if required.
         // Get remote courses.
 //        $remotecourses = array();
 //        if (is_enabled_auth('mnet')) {
