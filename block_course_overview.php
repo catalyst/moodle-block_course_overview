@@ -116,7 +116,7 @@ class block_course_overview extends block_base {
         $ftab->tab = 'favourites';
         list($ftab->sortedcourses, $ftab->sitecourses)
             = block_course_overview_get_sorted_courses(true, false, [], $favoriteoffset, $limit);
-        if ($totalcourses < 0 ) {
+        if ($totalfavorites < 0 ) {
             $ftab->totalcourses = block_course_overview_get_sorted_courses(true)[2];
         } else {
             $ftab->totalcourses = $totalfavorites;

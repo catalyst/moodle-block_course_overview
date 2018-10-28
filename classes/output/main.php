@@ -188,30 +188,30 @@ class main implements renderable, templatable {
                 'show' => $this->selectedtab == 'favourites' ? 'show active' : '',
                 'data' => $this->process_tab($output, true, $tabfavourites),
                 'haspaging' => $tabfavourites->paging,
-                'pagingbar' => $this->create_paging(
-                    $tabfavourites->paging,
-                    $tabfavourites->totalcourses,
-                    $tabfavourites->page,
-                    $tabfavourites->courseslimit,
-                    'favourites',
-                    $tabcourses->page,
-                    $tabcourses->totalcourses
-                ),
+                'pagingbar' => $tabfavourites->paging ? $this->create_paging(
+                        $tabfavourites->paging,
+                        $tabfavourites->totalcourses,
+                        $tabfavourites->page,
+                        $tabfavourites->courseslimit,
+                        'favourites',
+                        $tabcourses->page,
+                        $tabcourses->totalcourses
+                    ) : '',
             ],
             1 => (object) [
                 'tab' => 'courses',
                 'show' => $this->selectedtab == 'courses' ? 'show active' : '',
                 'data' => $this->process_tab($output, false, $tabcourses),
                 'haspaging' => $tabcourses->paging,
-                'pagingbar' => $this->create_paging(
-                    $tabcourses->paging,
-                    $tabcourses->totalcourses,
-                    $tabcourses->page,
-                    $tabcourses->courseslimit,
-                    'courses',
-                    $tabfavourites->page,
-                    $tabfavourites->totalcourses
-                ),
+                'pagingbar' => $tabcourses->paging ? $this->create_paging(
+                        $tabcourses->paging,
+                        $tabcourses->totalcourses,
+                        $tabcourses->page,
+                        $tabcourses->courseslimit,
+                        'courses',
+                        $tabfavourites->page,
+                        $tabfavourites->totalcourses
+                    ): '',
                 ],
         );
 
