@@ -58,15 +58,27 @@ function block_course_overview_get_overviews($courses) {
     $htmlarray = array();
 
     if ($modules = get_plugin_list_with_function('mod', 'print_overview')) {
+
+        $enabledshowmodules = array();
+
+        $config = get_config('block_course_overview');
+
+        foreach ($modules as $fname) {
+            if($config->$fname){
+                $enabledshowmodules[] = $fname;
+            }
+        }
+
         // Split courses list into batches with no more than MAX_MODINFO_CACHE_SIZE courses in one batch.
         // Otherwise we exceed the cache limit in get_fast_modinfo() and rebuild it too often.
+
         if (defined('MAX_MODINFO_CACHE_SIZE') && MAX_MODINFO_CACHE_SIZE > 0 && count($courses) > MAX_MODINFO_CACHE_SIZE) {
             $batches = array_chunk($courses, MAX_MODINFO_CACHE_SIZE, true);
         } else {
             $batches = array($courses);
         }
         foreach ($batches as $courses) {
-            foreach ($modules as $fname) {
+            foreach ($enabledshowmodules as $fname) {
                 $fname($courses, $htmlarray);
             }
         }
@@ -340,13 +352,5 @@ function block_course_overview_get_max_user_courses($showallcourses = false) {
     $config = get_config('block_course_overview');
     $limit = $config->defaultmaxcourses;
 
-    // If max course is not set then try get user preference
-    if (empty($config->forcedefaultmaxcourses)) {
-        if ($showallcourses) {
-            $limit = 0;
-        } else {
-            $limit = get_user_preferences('course_overview_number_of_courses', $limit);
-        }
-    }
     return $limit;
 }

@@ -78,4 +78,4 @@ $string['welcome'] = 'Welcome {$a}';
 $string['youhavemessages'] = 'You have {$a} unread ';
 $string['youhavenomessages'] = 'You have no unread ';
 $string['defaultmaxcourses'] = 'Default maximum courses';
-$string['defaultmaxcoursesdesc'] = 'Maximum courses which should be displayed on course overview block, 0 will show all courses';
+$string['defaultmaxcoursesdesc'] = 'Maximum courses which should be displayed per page on course overview block, 0 will show all courses';

@@ -56,6 +56,7 @@ if ($ADMIN->fulltree) {
         $defaulttabs
     ));
 
+    // Max courses per page.
     $settings->add(new admin_setting_configtext(
         'block_course_overview/defaultmaxcourses',
         new lang_string('defaultmaxcourses', 'block_course_overview'),
@@ -63,4 +64,23 @@ if ($ADMIN->fulltree) {
         BLOCKS_COURSE_OVERVIEW_DEFAULT_MAX_COURSES,
         PARAM_INT)
     );
+
+    // Show activity icons.
+    if ($modules = $DB->get_records('modules', null, 'name')) {
+        $settings->add(new admin_setting_heading('block_course_overview_show_modules',
+            'Modules overviews to show in limited mode', ''));
+        foreach ($modules as $mod) {
+            if (file_exists($CFG->dirroot.'/mod/'.$mod->name.'/lib.php')) {
+                include_once($CFG->dirroot.'/mod/'.$mod->name.'/lib.php');
+                $fname = $mod->name.'_print_overview';
+                if (function_exists($fname)) {
+                    $settings->add(new admin_setting_configcheckbox(
+                        'block_course_overview/' . $fname,
+                        'Show ' . get_string('modulename', $mod->name),
+                        '', 1, 1, 0));
+                }
+            }
+        }
+    }
+
 }

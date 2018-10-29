@@ -117,6 +117,7 @@ class block_course_overview extends block_base {
         list($ftab->sortedcourses, $ftab->sitecourses)
             = block_course_overview_get_sorted_courses(true, false, [], $favoriteoffset, $limit);
         if ($totalfavorites < 0 ) {
+            // TODO: Find a better way to get total number of  courses.
             $ftab->totalcourses = block_course_overview_get_sorted_courses(true)[2];
         } else {
             $ftab->totalcourses = $totalfavorites;
@@ -137,6 +138,7 @@ class block_course_overview extends block_base {
         list($ctab->sortedcourses, $ctab->sitecourses)
             = block_course_overview_get_sorted_courses(false, true, [], $courseoffset, $limit);
         if ($totalcourses < 0 ) {
+            // TODO: Find a better way to get total number of  courses.
             $ctab->totalcourses = block_course_overview_get_sorted_courses(false, true)[2];
         } else {
             $ctab->totalcourses = $totalcourses;
