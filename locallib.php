@@ -209,9 +209,9 @@ function block_course_overview_get_sorted_courses($favourites, $keepfavourites =
         }
         if ($favourites) {
             $favids = block_course_overview_get_favourites();
-            $courses = enrol_get_my_courses(null, $sort . " OFFSET $offset ",  $limit, $favids);
+            $courses = enrol_get_my_courses(null, $sort . " OFFSET $offset ", $limit, $favids);
         } else {
-            $courses = enrol_get_my_courses(null, $sort . " OFFSET $offset ",  $limit);
+            $courses = enrol_get_my_courses(null, $sort . " OFFSET $offset ", $limit);
         }
 
         $site = get_site();
