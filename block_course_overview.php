@@ -160,7 +160,9 @@ class block_course_overview extends block_base {
         );
 
         // Get list of favourites.
-        $favourites = array_keys($ftab->sortedcourses);
+        $favourites = new stdClass();
+        $favourites->favtab = array_keys($ftab->sortedcourses);
+        $favourites->coursetab = block_course_overview_get_favourites();;
 
         $renderer = $this->page->get_renderer('block_course_overview');
 

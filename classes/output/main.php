@@ -82,12 +82,13 @@ class main implements renderable, templatable {
         foreach ($tab->sortedcourses as $course) {
             $course->link = new \moodle_url('/course/view.php', array('id' => $course->id));
             $course->categories = implode(' / ', $this->categories($course->category));
-            if (in_array($course->id, $this->favourites)) {
-                $course->favouritelink = new \moodle_url('/my', array('unfavourite' => $course->id));
+            $favoritescourse = $favtab ? $this->favourites->favtab : $this->favourites->coursetab;
+            if (in_array($course->id, $favoritescourse)) {
+                $course->favouritelink = new \moodle_url('/my/index.php', array('unfavourite' => $course->id));
                 $course->favouriteicon = 'fa-star';
                 $course->favouritealt = get_string('unfavourite', 'block_course_overview');
             } else {
-                $course->favouritelink = new \moodle_url('/my', array('favourite' => $course->id));
+                $course->favouritelink = new \moodle_url('/my/index.php', array('favourite' => $course->id));
                 $course->favouriteicon = 'fa-star-o';
                 $course->favouritealt = get_string('makefavourite', 'block_course_overview');
             }
