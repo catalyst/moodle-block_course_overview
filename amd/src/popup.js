@@ -42,6 +42,10 @@ define(['jquery', 'jqueryui', 'core/config'], function($, UI, mdlconfig) {
             // Opens the appropriate dialog.
             $(".overview-icon").click(function () {
 
+                $(".dialogue").each( function () {
+                    $(this).dialog("close");
+                });
+
                 // Takes the ID of appropriate dialogue.
                 var id = $(this).data('id');
 
