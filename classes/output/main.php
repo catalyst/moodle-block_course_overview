@@ -162,7 +162,7 @@ class main implements renderable, templatable {
 
         // Courses reorder select.
         $select = $output->single_select(
-            new \moodle_url('/my', array('sesskey' => sesskey())),
+            new \moodle_url('/my/index.php', array('sesskey' => sesskey())),
             'sortorder',
             $options,
             $this->sortorder,
