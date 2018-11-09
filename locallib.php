@@ -203,7 +203,7 @@ function block_course_overview_get_sorted_courses($favourites, $keepfavourites =
         } else if ($sortorder == BLOCKS_COURSE_OVERVIEW_REORDER_SHORTNAME) {
             $sort = 'shortname ASC';
         } else if ($sortorder == BLOCKS_COURSE_OVERVIEW_REORDER_ID) {
-            $sort = 'id ASC';
+            $sort = 'id DESC';
         } else {
             $sort = 'visible DESC,sortorder ASC';
         }
