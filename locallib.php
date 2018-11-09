@@ -166,7 +166,7 @@ function block_course_overview_get_sortorder() {
     if ($value = get_user_preferences('course_overview_sortorder')) {
         return $value;
     } else {
-        return BLOCKS_COURSE_OVERVIEW_REORDER_NONE;
+        return BLOCKS_COURSE_OVERVIEW_REORDER_ID;
     }
 }
 
