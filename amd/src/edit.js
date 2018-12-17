@@ -38,7 +38,9 @@ define(['jquery', 'jqueryui'], function($, UI) {
                     var sortorder = [];
                     $.each(kids, function(index, value) {
                         var id = value.getAttribute('id');
-                        sortorder[index] = id.substring(7);
+                        if (id) {
+                            sortorder[index] = id.substring(7);
+                        }
                     });
 
                     // Send new sortorder.

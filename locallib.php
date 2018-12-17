@@ -163,7 +163,8 @@ function block_course_overview_update_favourites($favourites) {
  * @return int
  */
 function block_course_overview_get_sortorder() {
-    if ($value = get_user_preferences('course_overview_sortorder')) {
+    $value = get_user_preferences('course_overview_sortorder');
+    if (isset($value)) {
         return $value;
     } else {
         return BLOCKS_COURSE_OVERVIEW_REORDER_ID;
@@ -205,7 +206,7 @@ function block_course_overview_get_sorted_courses($favourites, $keepfavourites =
         } else if ($sortorder == BLOCKS_COURSE_OVERVIEW_REORDER_ID) {
             $sort = 'id DESC';
         } else {
-            $sort = 'visible DESC,sortorder ASC';
+            $sort = 'visible DESC, sortorder ASC';
         }
         if ($favourites) {
             $favids = block_course_overview_get_favourites();
