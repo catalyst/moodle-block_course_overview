@@ -23,17 +23,19 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(['jquery', 'jqueryui'], function($, UI) {
+define(['jquery', 'jqueryui'], function($) {
 
     return {
         init: function() {
 
             // Change non-js links to be inactive.
-            $(".courseovbox a").removeAttr("href");
+            // Commenting this code as a part of WR #304256
+            // to enable subject links on edit mode.
+            // $(".courseovbox a").removeAttr("href");
 
             // Make the course list sort.
             $(".tab-pane .course-list").sortable({
-                update: function(event, ui) {
+                update: function() {
                     var kids = $(".tab-pane.active .course-list").children();
                     var sortorder = [];
                     $.each(kids, function(index, value) {
