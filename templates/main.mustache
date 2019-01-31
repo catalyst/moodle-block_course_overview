@@ -60,7 +60,6 @@
         {{/ tabs }}
     </div>
 
-    {{^ isediting }}
     <div class="dialogue_container" style="display: none">
         {{# tabs }}
             {{# data }}
@@ -77,13 +76,17 @@
             {{/ data }}
         {{/ tabs }}
     </div>
-    {{/ isediting }}
 
     <div class="overview-help">
         {{{ help }}}
     </div>
 </div>
 
+{{# js }}
+    require(['jquery', 'block_course_overview/popup'], function($, Popup) {
+        Popup.init({{ viewingfavourites }});
+    });
+{{/ js }}
 {{# isediting }}
     {{# js }}
         require(['jquery', 'block_course_overview/edit'], function($, Edit) {
@@ -91,11 +94,3 @@
         });
     {{/ js }}
 {{/ isediting }}
-{{^ isediting }}
-    {{# js }}
-        require(['jquery', 'block_course_overview/popup'], function($, Popup) {
-            Popup.init({{ viewingfavourites }});
-        });
-    {{/ js }}
-{{/ isediting }}
-
