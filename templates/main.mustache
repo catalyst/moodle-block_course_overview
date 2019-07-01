@@ -55,7 +55,9 @@
     <div class="tab-content">
         {{# tabs }}
             <div class="tab-pane {{ show }}" id="{{ tab }}" role="tabpanel">
-                {{> block_course_overview/courselist }}
+                <ul>
+                    {{> block_course_overview/courselist }}
+                </ul>
             </div>
         {{/ tabs }}
     </div>
