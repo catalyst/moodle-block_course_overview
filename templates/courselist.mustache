@@ -23,35 +23,37 @@
     {}
 }}
 <div class="course-list container-fluid">
-    {{# data }}
-    <li>
-        <div id="course-{{ id }}" class="row courseovbox lead">
-            <div class="col-sm-1 span1">
-                {{# isediting }}
-                    <i class="icon fa fa-fw fa-arrows cursor" title="{{# str }}movecourse, block_course_overview, {{ fullname }}{{/ str }}"></i>
-                {{/ isediting }}
-                {{^ isediting }}
-                    <a href="{{ favouritelink }}" class="favourite_icon text-primary" aria-label="{{ favouritealt }} course-{{ fullname }}">
-                        <i class="icon fa fa-fw {{ favouriteicon }}" title="{{ favouritealt }}" aria-hidden="true"></i>
-                    </a>
-                {{/ isediting }}
-            </div>
-            <div class="col-sm-8 span8">
-                <strong><a {{^ visible }}class="dimmed"{{/ visible }} href="{{ link }}">{{ fullname }}</a></strong><br />
-                <small>{{ categories }}</small>
-            </div>
-            {{# hasoverviews }}
-                <div class="col-sm-3 span3">
-                    {{# overviews }}
-                         <a href="#" class="overview-icon" data-id="#{{ overviewid }}">
-                             {{{ icon }}}
-                         </a>
-                    {{/ overviews }}
+    <ul>
+        {{# data }}
+        <li>
+            <div id="course-{{ id }}" class="row courseovbox lead">
+                <div class="col-sm-1 span1">
+                    {{# isediting }}
+                        <i class="icon fa fa-fw fa-arrows cursor" title="{{# str }}movecourse, block_course_overview, {{ fullname }}{{/ str }}"></i>
+                    {{/ isediting }}
+                    {{^ isediting }}
+                        <a href="{{ favouritelink }}" class="favourite_icon text-primary" aria-label="{{ favouritealt }} course {{ fullname }}">
+                            <i class="icon fa fa-fw {{ favouriteicon }}" title="{{ favouritealt }}" aria-hidden="true"></i>
+                        </a>
+                    {{/ isediting }}
                 </div>
-            {{/ hasoverviews }}
-        </div>
-    </li>
-    {{/ data }}
+                <div class="col-sm-8 span8">
+                    <strong><a {{^ visible }}class="dimmed"{{/ visible }} href="{{ link }}">{{ fullname }}</a></strong><br />
+                    <small>{{ categories }}</small>
+                </div>
+                {{# hasoverviews }}
+                    <div class="col-sm-3 span3">
+                        {{# overviews }}
+                             <a href="#" class="overview-icon" data-id="#{{ overviewid }}">
+                                 {{{ icon }}}
+                             </a>
+                        {{/ overviews }}
+                    </div>
+                {{/ hasoverviews }}
+            </div>
+        </li>
+        {{/ data }}
+    </ul>
 
     {{# haspaging }}
         {{{ pagingbar }}}
