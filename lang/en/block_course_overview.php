@@ -79,4 +79,4 @@ $string['youhavemessages'] = 'You have {$a} unread ';
 $string['youhavenomessages'] = 'You have no unread ';
 $string['defaultmaxcourses'] = 'Default maximum subjects';
 $string['defaultmaxcoursesdesc'] = 'Maximum subjects which should be displayed per page on subject overview block, 0 will show all subjects';
-$string['coursearialabel'] = '{$a->action} course-{$a->fullname}';
+$string['coursearialabel'] = '{$a->action} subject- {$a->fullname}';
