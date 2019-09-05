@@ -20,7 +20,160 @@
     This template renders the main content area for the course_overview block
 
     Example context (json):
-    {}
+    {
+        "tabs" : {
+            "0" : {
+                "tab" : "favourites",
+                "show" : "show active",
+                "data" : {
+                    "0" : {
+                        "id" : "6",
+                        "category" : "2",
+                        "sortorder" : "50004",
+                        "shortname" : "small",
+                        "fullname" : "Test course: S",
+                        "idnumber" : "",
+                        "startdate" : "1564700400",
+                        "visible" : "1",
+                        "groupmode" : "0",
+                        "groupmodeforce" : "0",
+                        "cacherev" : "1566436895",
+                        "lastaccess" : "1566288403",
+                        "link" : {
+                            "scheme" : "http",
+                            "host" : "localhost",
+                            "port" : "",
+                            "user" : "",
+                            "pass" : "",
+                            "path" : "/course/view.php",
+                            "slashargument" : "",
+                            "anchor" : null,
+                            "params" : { "id" : "6" }
+                        },
+                        "categories" : "",
+                        "favouritelink" : {
+                            "scheme" : "http",
+                            "host" : "localhost",
+                            "port" : "",
+                            "user" : "",
+                            "pass" : "",
+                            "path" : "/my/index.php",
+                            "slashargument" : "",
+                            "anchor" : null,
+                            "params" : { "unfavourite" : "6" }
+                        },
+                        "favouriteicon" : "fa-star",
+                        "favouritealt" : "Remove favourite",
+                        "hasoverviews" : false
+                    }
+                },
+                "haspaging" : false,
+                "pagingbar" : ""
+            },
+            "1" : {
+                "tab" : "courses",
+                "show" : "",
+                "data" : {
+                    "0" : {
+                        "id" : "6",
+                        "category" : "2",
+                        "sortorder" : "50004",
+                        "shortname" : "small",
+                        "fullname" : "Test course: S",
+                        "idnumber" : "",
+                        "startdate" : "1564700400",
+                        "visible" : "1",
+                        "groupmode" : "0",
+                        "groupmodeforce" : "0",
+                        "cacherev" : "1566436895",
+                        "lastaccess" : "1566288403",
+                        "link" : {
+                            "scheme" : "http",
+                            "host" : "localhost",
+                            "port" : "",
+                            "user" : "",
+                            "pass" : "",
+                            "path" : "/course/view.php",
+                            "slashargument" : "",
+                            "anchor" : null,
+                            "params" : {"id" : "6"}
+                        },
+                        "categories" : "",
+                        "favouritelink" : {
+                            "scheme" : "http",
+                            "host" : "localhost",
+                            "port" : "",
+                            "user" : "",
+                            "pass" : "",
+                            "path" : "/my/index.php",
+                            "slashargument" : "",
+                            "anchor" : null,
+                            "params" : {"unfavourite" : "6"}
+                        },
+                        "favouriteicon" : "fa-star",
+                        "favouritealt" : "Remove favourite",
+                        "hasoverviews" : false
+                    },
+                    "1" : {
+                        "id" : "5",
+                        "category" : "2",
+                        "sortorder" : "50003",
+                        "shortname" : "2019-PHY1SCA(BE-1/BU-1)",
+                        "fullname" : "2019-PHY1SCA(BE-1/BU-1) - PRINCIPLES OF PHYSICS A",
+                        "idnumber" : "",
+                        "startdate" : "1294837200",
+                        "visible" : "1",
+                        "groupmode" : "2",
+                        "groupmodeforce" : "0",
+                        "cacherev" : "1566436895",
+                        "lastaccess" : "1566342687",
+                        "link" : {
+                            "scheme" : "http",
+                            "host" : "localhost",
+                            "port" : "",
+                            "user" : "",
+                            "pass" : "",
+                            "path" : "/course/view.php",
+                            "slashargument" : "",
+                            "anchor" : null,
+                            "params" : {"id" : "5"}
+                        },
+                        "categories" : "",
+                        "favouritelink" : {
+                            "scheme" : "http",
+                            "host" : "localhost",
+                            "port" : "",
+                            "user" : "",
+                            "pass" : "",
+                            "path" : "/my/index.php",
+                            "slashargument" : "",
+                            "anchor" : null,
+                            "params" : {"favourite" : 5}
+                        },
+                        "favouriteicon" : "fa-star-o",
+                        "favouritealt" : "Make favourite",
+                        "hasoverviews" : true,
+                        "overviews" : {
+                            "0" : {
+                                "coursename" : "2019-PHY1SCA(BE-1/BU-1) - PRINCIPLES OF PHYSICS A",
+                                "visible" : "1",
+                                "activity" : "assign",
+                                "text" : "<div class='assign overview'><div class='name'>Assignment: <a title='Assignment' href='http://localhost/mod/assign/view.php?id=737'>Fav Assignment</a></div><div class='info'>Due date: Wednesday, 28 August 2019, 12:00 AM</div><div class='details'>My submission: Not submitted yet, Not graded</div></div>",
+                                "overviewid" : "assign_5",
+                                "icon" : "<img class='icon' alt='You have Assignments that need attention' title='You have Assignments that need attention' src='http://localhost/theme/image.php/latrobeboost/mod_assign/1566436895/icon' />"
+                            }
+                        }
+                    }
+                },
+                "haspaging" : false,
+                "pagingbar" : ""
+            }
+        },
+        "isediting" : false,
+        "help" : "<a class='btn btn-link p-0' role='button' data-container='body' data-toggle='popover' data-placement='right' data-content='&lt;div class=&quot;no-overflow&quot;&gt;&lt;p&gt;&#039;Customise this page&#039;, then drag-and-drop to reorder subjects. Click activity icons for overview&lt;/p&gt; &lt;/div&gt;' data-html='true' tabindex='0' data-trigger='focus'><i class='icon fa fa-question-circle text-info fa-fw' alt='Help with this' title='Help with this' aria-label='Help with this'></i></a>",
+        "viewingfavourites" : true,
+        "select" : "<div class='singleselect d-inline-block'><form method='get' action='http://localhost/my/index.php' class='form-inline' id='single_select_f5d5e01e0c896f5'><input type='hidden' name='sesskey' value='6SXMrD1e64'><select  id='single_select5d5e01e0c896f6' class='custom-select singleselect' name='sortorder'><option  value='0' >Drag-and-drop order</option><option  value='1' >Subject full name</option><option  value='2' >Subject short name</option><option  value='3' selected>Subject id</option></select><noscript><input type='submit' class='btn btn-secondary' value='Go'></noscript></form></div>"
+    }
 }}
 
 <form action="/course/search.php" id="coursesearch" method="get" class="form-inline">

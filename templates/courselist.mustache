@@ -20,36 +20,137 @@
     This template renders the course list for the course_overview block
 
     Example context (json):
-    {}
+    {
+        "tab" : "courses",
+        "show" : "",
+        "data" : {
+            "0" : {
+                "id" : "6",
+                "category" : "2",
+                "sortorder" : "50004",
+                "shortname" : "small",
+                "fullname" : "Test course: S",
+                "idnumber" : "",
+                "startdate" : "1564700400",
+                "visible" : "1",
+                "groupmode" : "0",
+                "groupmodeforce" : "0",
+                "cacherev" : "1566436895",
+                "lastaccess" : "1566288403",
+                "link" : {
+                    "scheme" : "http",
+                    "host" : "localhost",
+                    "port" : "",
+                    "user" : "",
+                    "pass" : "",
+                    "path" : "/course/view.php",
+                    "slashargument" : "",
+                    "anchor" : null,
+                    "params" : {"id" : "6"}
+                },
+                "categories" : "",
+                "favouritelink" : {
+                    "scheme" : "http",
+                    "host" : "localhost",
+                    "port" : "",
+                    "user" : "",
+                    "pass" : "",
+                    "path" : "/my/index.php",
+                    "slashargument" : "",
+                    "anchor" : null,
+                    "params" : {"unfavourite" : "6"}
+                },
+                "favouriteicon" : "fa-star",
+                "favouritealt" : "Remove favourite",
+                "hasoverviews" : false
+            },
+            "1" : {
+                "id" : "5",
+                "category" : "2",
+                "sortorder" : "50003",
+                "shortname" : "2019-PHY1SCA(BE-1/BU-1)",
+                "fullname" : "2019-PHY1SCA(BE-1/BU-1) - PRINCIPLES OF PHYSICS A",
+                "idnumber" : "",
+                "startdate" : "1294837200",
+                "visible" : "1",
+                "groupmode" : "2",
+                "groupmodeforce" : "0",
+                "cacherev" : "1566436895",
+                "lastaccess" : "1566342687",
+                "link" : {
+                    "scheme" : "http",
+                    "host" : "localhost",
+                    "port" : "",
+                    "user" : "",
+                    "pass" : "",
+                    "path" : "/course/view.php",
+                    "slashargument" : "",
+                    "anchor" : null,
+                    "params" : {"id" : "5"}
+                },
+                "categories" : "",
+                "favouritelink" : {
+                    "scheme" : "http",
+                    "host" : "localhost",
+                    "port" : "",
+                    "user" : "",
+                    "pass" : "",
+                    "path" : "/my/index.php",
+                    "slashargument" : "",
+                    "anchor" : null,
+                    "params" : {"favourite" : 5}
+                },
+                "favouriteicon" : "fa-star-o",
+                "favouritealt" : "Make favourite",
+                "hasoverviews" : true,
+                "overviews" : {
+                    "0" : {
+                        "coursename" : "2019-PHY1SCA(BE-1/BU-1) - PRINCIPLES OF PHYSICS A",
+                        "visible" : "1",
+                        "activity" : "assign",
+                        "text" : "<div class='assign overview'><div class='name'>Assignment: <a title='Assignment' href='http://localhost/mod/assign/view.php?id=737'>Fav Assignment</a></div><div class='info'>Due date: Wednesday, 28 August 2019, 12:00 AM</div><div class='details'>My submission: Not submitted yet, Not graded</div></div>",
+                        "overviewid" : "assign_5",
+                        "icon" : "<img class='icon' alt='You have Assignments that need attention' title='You have Assignments that need attention' src='http://localhost/theme/image.php/latrobeboost/mod_assign/1566436895/icon' />"
+                    }
+                }
+            }
+        },
+        "haspaging" : false,
+        "pagingbar" : ""
+    }
 }}
 <div class="course-list container-fluid">
-    {{# data }}
-        <div id="course-{{ id }}" class="row courseovbox lead">
-            <div class="col-sm-1 span1">
-                {{# isediting }}
-                    <i class="icon fa fa-fw fa-arrows cursor" title="{{# str }}movecourse, block_course_overview, {{ fullname }}{{/ str }}"></i>
-                {{/ isediting }}
-                {{^ isediting }}
-                    <a href="{{ favouritelink }}" class="favourite_icon text-primary" alt="{{ favouritealt }}">
-                        <i class="icon fa fa-fw {{ favouriteicon }} " title="{{ favouritealt }}"></i>
-                    </a>
-                {{/ isediting }}
-            </div>
-            <div class="col-sm-8 span8">
-                <strong><a {{^ visible }}class="dimmed"{{/ visible }} href="{{ link }}">{{ fullname }}</a></strong><br />
-                <small>{{ categories }}</small>
-            </div>
-            {{# hasoverviews }}
-                <div class="col-sm-3 span3">
-                    {{# overviews }}
-                         <a href="#" class="overview-icon" data-id="#{{ overviewid }}">
-                             {{{ icon }}}
-                         </a>
-                    {{/ overviews }}
+    <ul>
+        {{# data }}
+        <li>
+            <div id="course-{{ id }}" class="row courseovbox lead">
+                <div class="col-sm-1 span1">
+                    {{# isediting }}
+                        <i class="icon fa fa-fw fa-arrows cursor" title="{{# str }}movecourse, block_course_overview, {{ fullname }}{{/ str }}"></i>
+                    {{/ isediting }}
+                    {{^ isediting }}
+                        <a href="{{ favouritelink }}" class="favourite_icon text-primary" aria-label="{{# str}}coursearialabel, block_course_overview, { "action" : {{# quote }}{{ favouritealt }}{{/ quote }}, "fullname" : {{# quote }}{{ fullname }}{{/ quote }} }{{/str}}">
+                            <i class="icon fa fa-fw {{ favouriteicon }}" title="{{ favouritealt }}" aria-hidden="true"></i>
+                        </a>
+                    {{/ isediting }}
                 </div>
-            {{/ hasoverviews }}
-        </div>
-     {{/ data }}
+                <div class="col-sm-8 span8">
+                    <strong><a {{^ visible }}class="dimmed"{{/ visible }} href="{{ link }}">{{ fullname }}</a></strong><br />
+                    <small>{{ categories }}</small>
+                </div>
+                {{# hasoverviews }}
+                    <div class="col-sm-3 span3">
+                        {{# overviews }}
+                             <a href="#" class="overview-icon" data-id="#{{ overviewid }}">
+                                 {{{ icon }}}
+                             </a>
+                        {{/ overviews }}
+                    </div>
+                {{/ hasoverviews }}
+            </div>
+        </li>
+        {{/ data }}
+    </ul>
 
     {{# haspaging }}
         {{{ pagingbar }}}
