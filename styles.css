@@ -69,6 +69,6 @@ div.courseovbox {
     left: 1px;
 }
 
-.course-list li, li {
+.block-course-overview .course-list li {
     list-style-type: none;
 }
