@@ -34,7 +34,7 @@ define(['jquery', 'jqueryui'], function($) {
             // $(".courseovbox a").removeAttr("href");
 
             // Make the course list sort.
-            $(".tab-pane .course-list").sortable({
+            $(".tab-pane .course-list ul").sortable({
                 update: function() {
                     var kids = $(".tab-pane.active .course-list").children();
                     var sortorder = [];
