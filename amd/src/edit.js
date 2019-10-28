@@ -36,10 +36,10 @@ define(['jquery', 'jqueryui'], function($) {
             // Make the course list sort.
             $(".tab-pane .course-list ul").sortable({
                 update: function() {
-                    var kids = $(".tab-pane.active .course-list").children();
+                    var kids = $(".tab-pane.active .course-list ul").children();
                     var sortorder = [];
                     $.each(kids, function(index, value) {
-                        var id = value.getAttribute('id');
+                        var id = $(this).find('.courseovbox').attr('id');
                         if (id) {
                             sortorder[index] = id.substring(7);
                         }
